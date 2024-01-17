@@ -1,0 +1,71 @@
+{
+  "name": "@bugpilot/wizard",
+  "version": "0.0.3",
+  "description": "Bugpilot Wizard is a CLI tool to help you setup Bugpilot in your project",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/bugpilot/wizard"
+  },
+  "type": "module",
+  "bin": "./dist/index.js",
+  "files": [
+    "dist/index.js",
+    "dist/index.js.map"
+  ],
+  "scripts": {
+    "lint": "eslint --fix .",
+    "prebuild": "pnpm run lint && pnpm audit",
+    "build": "pnpm rollup -c && chmod +x ./dist/index.js",
+    "build:watch": "npx nodemon -w src -e ts -x pnpm -- build"
+  },
+  "keywords": [
+    "bugpilot",
+    "cli",
+    "error",
+    "error-monitoring",
+    "react",
+    "nextjs",
+    "error-handling"
+  ],
+  "author": "Simone Lusenti <lusenti.s@gmail.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "@babel/core": "^7.23.7",
+    "@babel/generator": "^7.23.6",
+    "@babel/parser": "^7.23.6",
+    "@babel/preset-typescript": "^7.23.3",
+    "@babel/traverse": "^7.23.7",
+    "@babel/types": "^7.23.6",
+    "@clack/prompts": "^0.7.0",
+    "@rollup/plugin-commonjs": "^25.0.7",
+    "@rollup/plugin-json": "^6.1.0",
+    "@rollup/plugin-node-resolve": "^15.2.3",
+    "@rollup/plugin-terser": "^0.4.4",
+    "@rollup/plugin-typescript": "^11.1.6",
+    "@types/babel-types": "^7.0.15",
+    "@types/babel__core": "^7.20.5",
+    "@types/jest": "^29.5.11",
+    "@types/node": "^20.11.5",
+    "@typescript-eslint/eslint-plugin": "^6.19.0",
+    "@typescript-eslint/parser": "^6.19.0",
+    "chalk": "^4.1.2",
+    "eslint": "^8.56.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-import-resolver-typescript": "^3.6.1",
+    "eslint-plugin-import": "^2.29.1",
+    "eslint-plugin-prettier": "^5.1.3",
+    "open": "^10.0.3",
+    "prettier": "^3.2.4",
+    "prettier-eslint": "^16.2.0",
+    "rollup": "^4.9.5",
+    "semver": "^7.5.4",
+    "ts-node": "^10.9.2",
+    "tslib": "^2.6.2",
+    "typescript": "^5.3.3",
+    "yargs": "^17.7.2",
+    "zod": "^3.22.4"
+  },
+  "publishConfig": {
+    "provenance": true
+  }
+}
