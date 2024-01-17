@@ -1,6 +1,6 @@
 {
   "name": "@bugpilot/wizard",
-  "version": "0.0.3",
+  "version": "0.9.0",
   "description": "Bugpilot Wizard is a CLI tool to help you setup Bugpilot in your project",
   "repository": {
     "type": "git",
