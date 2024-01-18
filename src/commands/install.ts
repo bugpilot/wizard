@@ -12,6 +12,7 @@ import {
 } from "@clack/prompts";
 import chalk from "chalk";
 import open from "open";
+import { Arguments } from "yargs";
 import { z } from "zod";
 
 import packageJsonWizard from "../../package.json";
@@ -26,7 +27,7 @@ type Args = {
   workspaceId?: string;
 };
 
-export async function install(argv: Args) {
+export async function install(argv: Arguments<Args>) {
   try {
     intro(
       `${chalk.bgCyanBright.bold(

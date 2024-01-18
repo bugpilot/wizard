@@ -5,7 +5,7 @@ import { hideBin } from "yargs/helpers";
 
 import { install } from "./commands/install.js";
 
-yargs(hideBin(process.argv))
+await yargs(hideBin(process.argv))
   .command(
     "install",
     "Start the Bugpilot installation wizard",
@@ -23,6 +23,7 @@ yargs(hideBin(process.argv))
     "Show help",
     () => {},
     () => {
+      // @ts-expect-error yargs typings are wrong
       yargs.showHelp();
     },
   )

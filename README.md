@@ -1,5 +1,4 @@
-Bugpilot Wizard
-===
+# Bugpilot Wizard
 
 ![NPM Version](https://img.shields.io/npm/v/@bugpilot/wizard)
 
