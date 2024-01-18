@@ -12,9 +12,10 @@ import {
 } from "@clack/prompts";
 import chalk from "chalk";
 import open from "open";
+import { Arguments } from "yargs";
 import { z } from "zod";
 
-import packageJsonWizard from "../../package.json";
+import packageJsonWizard from "../../package.json" assert { type: "json" };
 import { WizardError } from "../error-classes.js";
 import { run as runNextJsApp } from "../nextjs/nextjs-wizard.js";
 import {
@@ -26,7 +27,7 @@ type Args = {
   workspaceId?: string;
 };
 
-export async function install(argv: Args) {
+export async function install(argv: Arguments<Args>) {
   try {
     intro(
       `${chalk.bgCyanBright.bold(

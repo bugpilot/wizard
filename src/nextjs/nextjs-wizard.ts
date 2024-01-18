@@ -59,14 +59,15 @@ function getAppFolder(rootDir: string) {
 }
 
 function installDependencies(rootDir: string) {
-  let packageManager = "npm";
+  let packageManager: keyof typeof InstallBugpilotCommand = "npm";
+
   if (existsSync(join(rootDir, "yarn.lock"))) {
     packageManager = "yarn";
   } else if (existsSync(join(rootDir, "pnpm-lock.yaml"))) {
     packageManager = "pnpm";
   }
 
-  const cmd = InstallBugpilotCommand[packageManager] as string;
+  const cmd = InstallBugpilotCommand[packageManager];
 
   log.info(`Running command: ${cmd}`);
   execSync(cmd, { stdio: "inherit", cwd: rootDir });
