@@ -25,9 +25,6 @@ export async function run() {
   ensureNextJsVersion();
   const appFolder = getAppFolder(rootDir);
 
-  log.step("Installing @bugpilot/plugin-nextjs...");
-  installDependencies(rootDir);
-
   log.step("Updating next.config.js...");
   injectConfig(rootDir);
 
@@ -36,6 +33,9 @@ export async function run() {
 
   log.step("Creating /app/global-error.tsx...");
   createGlobalErrorTs(appFolder);
+
+  log.step("Installing @bugpilot/plugin-nextjs...");
+  installDependencies(rootDir);
 
   log.success(
     "Next.js App Router wizard completed. It's a good idea to commit your changes now.",
