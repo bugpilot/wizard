@@ -51,6 +51,9 @@ export default function withBugpilotConfig() {
                 ),
                 t.callExpression(t.identifier("withBugpilot"), [
                   rightHandSideExpression,
+                  t.callExpression(t.identifier("require"), [
+                    t.stringLiteral("./bugpilot.config.js"),
+                  ]),
                 ]),
               ),
             ),
