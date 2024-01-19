@@ -1,7 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
 
-import { gte } from "semver";
+import { gte, minVersion } from "semver";
 
 import { WizardError } from "../error-classes.js";
 import { getDependencyVersion, getPackageJson } from "../utils/package-json.js";
@@ -12,7 +12,21 @@ export function ensureNextJsVersion() {
   const packageJsonObj = getPackageJson(cwd);
   const nextVersion = getDependencyVersion(packageJsonObj, "next");
 
-  if (!gte(nextVersion, "14.0.0")) {
+  if (!nextVersion) {
+    throw new WizardError(
+      "Bugpilot requires Next.js to be installed in your project.",
+    );
+  }
+
+  const minNextVersion = minVersion(nextVersion);
+
+  if (!minNextVersion) {
+    throw new WizardError(
+      `Bugpilot requires Next.js version to be a valid semver version. Found: ${nextVersion}`,
+    );
+  }
+
+  if (!gte(minNextVersion, "14.0.0")) {
     throw new WizardError(
       "Bugpilot requires Next.js version 14.0.0 or greater.",
     );
