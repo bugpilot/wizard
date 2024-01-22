@@ -40,7 +40,7 @@ export async function run(opts: Opts) {
   createErrorTsx(appFolder);
 
   log.step("Creating /app/global-error.tsx...");
-  createGlobalErrorTs(appFolder, opts.workspaceId);
+  createGlobalErrorTsx(appFolder, opts.workspaceId);
 
   log.step("Installing @bugpilot/plugin-nextjs...");
   installDependencies(rootDir);
@@ -154,7 +154,7 @@ function createErrorTsx(appFolder: string) {
   writeFileSync(filePath, RootErrorPageTemplate);
 }
 
-function createGlobalErrorTs(appRouterPath: string, workspaceId: string) {
+function createGlobalErrorTsx(appRouterPath: string, workspaceId: string) {
   const filePath = join(appRouterPath, "global-error.tsx");
 
   if (existsSync(filePath)) {
