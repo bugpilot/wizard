@@ -1,6 +1,6 @@
 {
   "name": "@bugpilot/wizard",
-  "version": "0.13.0",
+  "version": "0.14.0",
   "description": "Bugpilot Wizard is a CLI tool to help you setup Bugpilot in your project",
   "repository": {
     "type": "git",
@@ -32,6 +32,8 @@
   "license": "MIT",
   "dependencies": {
     "@babel/core": "^7.23.7",
+    "@babel/plugin-syntax-jsx": "^7.23.3",
+    "@babel/plugin-syntax-typescript": "^7.23.3",
     "@babel/types": "^7.23.6",
     "@clack/prompts": "^0.7.0",
     "chalk": "^4.1.2",

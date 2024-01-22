@@ -9,14 +9,19 @@ import chalk from "chalk";
 import { WizardError } from "../error-classes.js";
 
 import { ensureNextJsVersion, ensureNextJsConfig } from "./assertions.js";
+import addRootTagFactory from "./babel-plugins/add-root-tag.js";
 import withBugpilotConfig from "./babel-plugins/with-bugpilot-config.js";
 import {
-  GlobalErrorPageTemplate,
+  getGlobalErrorPageTemplate,
   InstallBugpilotCommand,
   RootErrorPageTemplate,
 } from "./templates.js";
 
-export async function run() {
+type Opts = {
+  workspaceId: string;
+};
+
+export async function run(opts: Opts) {
   const rootDir = process.cwd();
   log.info("Running from directory: " + rootDir);
 
@@ -28,11 +33,14 @@ export async function run() {
   log.step("Updating next.config.js...");
   injectConfig(rootDir);
 
+  log.step("Adding <Bugpilot /> to root layout...");
+  addBugpilotToLayout(appFolder, opts.workspaceId);
+
   log.step("Creating /app/error.tsx...");
   createErrorTsx(appFolder);
 
   log.step("Creating /app/global-error.tsx...");
-  createGlobalErrorTs(appFolder);
+  createGlobalErrorTsx(appFolder, opts.workspaceId);
 
   log.step("Installing @bugpilot/plugin-nextjs...");
   installDependencies(rootDir);
@@ -98,6 +106,40 @@ function injectConfig(rootDir: string) {
   writeFileSync(nextConfigPath, injectedCode);
 }
 
+function addBugpilotToLayout(appFolder: string, workspaceId: string) {
+  const layoutPath = join(appFolder, "layout.tsx");
+  const originalCode = readFileSync(layoutPath, "utf8");
+
+  const result = transformSync(originalCode, {
+    plugins: [
+      [
+        "@babel/plugin-syntax-typescript",
+        {
+          isTSX: true,
+        },
+      ],
+      "@babel/plugin-syntax-jsx",
+      addRootTagFactory(workspaceId),
+    ],
+  });
+
+  if (!result) {
+    throw new Error(
+      "Failed to update root layout (babel transform error). Please open an issue on GitHub.",
+    );
+  }
+
+  const injectedCode = result.code;
+
+  if (!injectedCode) {
+    throw new Error(
+      "Failed to update root layout (empty babel result code). Please open an issue on GitHub.",
+    );
+  }
+
+  writeFileSync(layoutPath, injectedCode);
+}
+
 function createErrorTsx(appFolder: string) {
   const filePath = join(appFolder, "error.tsx");
 
@@ -112,7 +154,7 @@ function createErrorTsx(appFolder: string) {
   writeFileSync(filePath, RootErrorPageTemplate);
 }
 
-function createGlobalErrorTs(appRouterPath: string) {
+function createGlobalErrorTsx(appRouterPath: string, workspaceId: string) {
   const filePath = join(appRouterPath, "global-error.tsx");
 
   if (existsSync(filePath)) {
@@ -123,5 +165,6 @@ function createGlobalErrorTs(appRouterPath: string) {
     return;
   }
 
-  writeFileSync(filePath, GlobalErrorPageTemplate);
+  const fileContents = getGlobalErrorPageTemplate(workspaceId);
+  writeFileSync(filePath, fileContents);
 }
