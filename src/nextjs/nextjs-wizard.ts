@@ -9,6 +9,7 @@ import chalk from "chalk";
 import { WizardError } from "../error-classes.js";
 
 import { ensureNextJsVersion, ensureNextJsConfig } from "./assertions.js";
+import addRootTagFactory from "./babel-plugins/add-root-tag.js";
 import withBugpilotConfig from "./babel-plugins/with-bugpilot-config.js";
 import {
   getGlobalErrorPageTemplate,
@@ -31,6 +32,9 @@ export async function run(opts: Opts) {
 
   log.step("Updating next.config.js...");
   injectConfig(rootDir);
+
+  log.step("Adding <Bugpilot /> to root layout...");
+  addBugpilotToLayout(appFolder, opts.workspaceId);
 
   log.step("Creating /app/error.tsx...");
   createErrorTsx(appFolder);
@@ -82,7 +86,8 @@ function injectConfig(rootDir: string) {
   const originalCode = readFileSync(nextConfigPath, "utf8");
 
   const result = transformSync(originalCode, {
-    plugins: [withBugpilotConfig],
+    plugins: ["@babel/plugin-transform-typescript", withBugpilotConfig],
+    presets: [["@babel/preset-react", { runtime: "automatic" }]],
   });
 
   if (!result) {
@@ -100,6 +105,41 @@ function injectConfig(rootDir: string) {
   }
 
   writeFileSync(nextConfigPath, injectedCode);
+}
+
+function addBugpilotToLayout(appFolder: string, workspaceId: string) {
+  const layoutPath = join(appFolder, "layout.tsx");
+  const originalCode = readFileSync(layoutPath, "utf8");
+
+  const result = transformSync(originalCode, {
+    plugins: [
+      [
+        "@babel/plugin-syntax-typescript",
+        {
+          isTSX: true,
+        },
+      ],
+      "@babel/plugin-syntax-jsx",
+      addRootTagFactory(workspaceId),
+    ],
+    presets: [],
+  });
+
+  if (!result) {
+    throw new Error(
+      "Failed to update root layout (babel transform error). Please open an issue on GitHub.",
+    );
+  }
+
+  const injectedCode = result.code;
+
+  if (!injectedCode) {
+    throw new Error(
+      "Failed to update root layout (empty babel result code). Please open an issue on GitHub.",
+    );
+  }
+
+  writeFileSync(layoutPath, injectedCode);
 }
 
 function createErrorTsx(appFolder: string) {
