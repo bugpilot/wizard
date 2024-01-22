@@ -86,8 +86,7 @@ function injectConfig(rootDir: string) {
   const originalCode = readFileSync(nextConfigPath, "utf8");
 
   const result = transformSync(originalCode, {
-    plugins: ["@babel/plugin-transform-typescript", withBugpilotConfig],
-    presets: [["@babel/preset-react", { runtime: "automatic" }]],
+    plugins: [withBugpilotConfig],
   });
 
   if (!result) {
@@ -122,7 +121,6 @@ function addBugpilotToLayout(appFolder: string, workspaceId: string) {
       "@babel/plugin-syntax-jsx",
       addRootTagFactory(workspaceId),
     ],
-    presets: [],
   });
 
   if (!result) {
