@@ -38,17 +38,19 @@ export async function install(argv: Arguments<Args>) {
     const defaultWorkspaceId =
       argv.workspaceId || (await safeGetBugpilotConfig())?.workspaceId;
 
-    const haveAccount = await confirm({
-      message: "Do you have a Bugpilot account?",
-      initialValue: defaultWorkspaceId ? true : false,
-    });
+    if (!defaultWorkspaceId) {
+      const haveAccount = await confirm({
+        message: "Do you have a Bugpilot account?",
+        initialValue: false,
+      });
 
-    if (!haveAccount) {
-      const url = "https://app.bugpilot.com/signup?via=cli";
-      log.info(
-        `Visit the Signup page to create a new Bugpilot Account: ${url}`,
-      );
-      await open(url);
+      if (!haveAccount) {
+        const url = "https://app.bugpilot.com/signup?via=cli";
+        log.info(
+          `Visit the Signup page to create a new Bugpilot Account: ${url}`,
+        );
+        await open(url);
+      }
     }
 
     const workspaceId = await text({
@@ -116,7 +118,9 @@ export async function install(argv: Arguments<Args>) {
       next: { productionBrowserSourceMaps },
     });
 
-    await runWizardForFramework(selectedFramework as string);
+    await runWizardForFramework(selectedFramework as string, {
+      workspaceId,
+    });
 
     log.success(
       `${chalk.bgCyanBright.bold("What's next?")} Bugpilot will now start collecting errors from your production builds. Bugpilot does not catch errors during development. Your Dashboard is ready at: https://app.bugpilot.com/workspace/${workspaceId}/overview`,
@@ -145,10 +149,15 @@ export async function install(argv: Arguments<Args>) {
   }
 }
 
-function runWizardForFramework(framework: string) {
+function runWizardForFramework(
+  framework: string,
+  opts: {
+    workspaceId: string;
+  },
+) {
   switch (framework) {
     case "nextjs-app":
-      return runNextJsApp();
+      return runNextJsApp(opts);
     default:
       throw new Error("Invalid framework: " + framework);
   }

@@ -11,12 +11,16 @@ import { WizardError } from "../error-classes.js";
 import { ensureNextJsVersion, ensureNextJsConfig } from "./assertions.js";
 import withBugpilotConfig from "./babel-plugins/with-bugpilot-config.js";
 import {
-  GlobalErrorPageTemplate,
+  getGlobalErrorPageTemplate,
   InstallBugpilotCommand,
   RootErrorPageTemplate,
 } from "./templates.js";
 
-export async function run() {
+type Opts = {
+  workspaceId: string;
+};
+
+export async function run(opts: Opts) {
   const rootDir = process.cwd();
   log.info("Running from directory: " + rootDir);
 
@@ -32,7 +36,7 @@ export async function run() {
   createErrorTsx(appFolder);
 
   log.step("Creating /app/global-error.tsx...");
-  createGlobalErrorTs(appFolder);
+  createGlobalErrorTs(appFolder, opts.workspaceId);
 
   log.step("Installing @bugpilot/plugin-nextjs...");
   installDependencies(rootDir);
@@ -112,7 +116,7 @@ function createErrorTsx(appFolder: string) {
   writeFileSync(filePath, RootErrorPageTemplate);
 }
 
-function createGlobalErrorTs(appRouterPath: string) {
+function createGlobalErrorTs(appRouterPath: string, workspaceId: string) {
   const filePath = join(appRouterPath, "global-error.tsx");
 
   if (existsSync(filePath)) {
@@ -123,5 +127,6 @@ function createGlobalErrorTs(appRouterPath: string) {
     return;
   }
 
-  writeFileSync(filePath, GlobalErrorPageTemplate);
+  const fileContents = getGlobalErrorPageTemplate(workspaceId);
+  writeFileSync(filePath, fileContents);
 }
