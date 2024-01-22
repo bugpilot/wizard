@@ -25,11 +25,6 @@ const addRootTagFactory = (workpaceId: string) => () => {
           return;
         }
 
-        console.log(
-          "path.node.openingElement.name",
-          path.node.openingElement.name,
-        );
-
         if (
           !t.isJSXIdentifier(path.node.openingElement.name, {
             name: "body",
