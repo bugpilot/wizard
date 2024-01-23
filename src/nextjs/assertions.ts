@@ -33,12 +33,13 @@ export function ensureNextJsVersion() {
   }
 }
 
-export function ensureNextJsConfig() {
-  const nextConfigPath = path.join(cwd, "next.config.js");
+export function getNextJsConfigFilename() {
+  const nextConfigPathJs = path.join(cwd, "next.config.js");
+  const nextConfigPathMjs = path.join(cwd, "next.config.mjs");
 
-  if (!fs.existsSync(nextConfigPath)) {
-    throw new WizardError(
-      `next.config.js not found at ${nextConfigPath}. Please run this command from your project root directory.`,
-    );
+  if (!fs.existsSync(nextConfigPathJs) && !fs.existsSync(nextConfigPathMjs)) {
+    return null;
   }
+
+  return fs.existsSync(nextConfigPathJs) ? nextConfigPathJs : nextConfigPathMjs;
 }
