@@ -9,7 +9,7 @@ Bugpilot is a platform to catch production errors in your React applications. Yo
 ## Usage
 
 ```bash
-npx @bugpilot/wizard@latest install
+pnpm dlx @bugpilot/wizard@latest install
 ```
 
 ## Manual Installation
