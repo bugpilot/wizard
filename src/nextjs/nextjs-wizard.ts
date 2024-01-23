@@ -3,6 +3,8 @@ import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import path, { join } from "node:path";
 
 import { transformSync } from "@babel/core";
+import pluginSyntaxJsx from "@babel/plugin-syntax-jsx";
+import pluginSyntaxTypescript from "@babel/plugin-syntax-typescript";
 import { log } from "@clack/prompts";
 import chalk from "chalk";
 
@@ -132,12 +134,12 @@ function addBugpilotToLayout(appFolder: string, workspaceId: string) {
   const result = transformSync(originalCode, {
     plugins: [
       [
-        "@babel/plugin-syntax-typescript",
+        pluginSyntaxTypescript,
         {
           isTSX: true,
         },
       ],
-      "@babel/plugin-syntax-jsx",
+      [pluginSyntaxJsx, {}],
       addRootTagFactory(workspaceId),
     ],
   });
