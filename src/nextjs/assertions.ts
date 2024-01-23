@@ -38,9 +38,7 @@ export function getNextJsConfigFilename() {
   const nextConfigPathMjs = path.join(cwd, "next.config.mjs");
 
   if (!fs.existsSync(nextConfigPathJs) && !fs.existsSync(nextConfigPathMjs)) {
-    throw new WizardError(
-      `next.config.js or next.config.mjs not found at ${nextConfigPathJs}. Please run this command from your project root directory.`,
-    );
+    return null;
   }
 
   return fs.existsSync(nextConfigPathJs) ? nextConfigPathJs : nextConfigPathMjs;

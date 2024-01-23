@@ -26,9 +26,14 @@ export async function run(opts: Opts) {
   log.info("Running from directory: " + rootDir);
 
   log.step("Checking prerequisites...");
-  const configFilename = getNextJsConfigFilename();
   ensureNextJsVersion();
   const appFolder = getAppFolder(rootDir);
+
+  let configFilename = getNextJsConfigFilename();
+
+  if (configFilename === null) {
+    configFilename = createEmptyNextJsConfig(rootDir);
+  }
 
   log.step(`Updating ${path.relative(process.cwd(), configFilename)}...`);
   injectConfig(configFilename);
@@ -48,6 +53,21 @@ export async function run(opts: Opts) {
   log.success(
     "Next.js App Router wizard completed. It's a good idea to commit your changes now.",
   );
+}
+
+function createEmptyNextJsConfig(rootDir: string) {
+  const configFilePath = join(rootDir, "next.config.mjs");
+
+  log.warning(
+    `Could not find next.config.js or next.config.mjs. Are you running this command from your project root folder? A default empty next.config.mjs file will be created.`,
+  );
+
+  writeFileSync(
+    configFilePath,
+    "/** @type {import('next').NextConfig} */\n\nconst nextConfig = {};\n\nexport default nextConfig;\n",
+  );
+
+  return configFilePath;
 }
 
 function getAppFolder(rootDir: string) {
