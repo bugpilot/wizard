@@ -1,6 +1,6 @@
 import { execSync } from "node:child_process";
 import { existsSync, readFileSync, writeFileSync } from "node:fs";
-import { join } from "node:path";
+import path, { join } from "node:path";
 
 import { transformSync } from "@babel/core";
 import { log } from "@clack/prompts";
@@ -8,9 +8,9 @@ import chalk from "chalk";
 
 import { WizardError } from "../error-classes.js";
 
-import { ensureNextJsVersion, ensureNextJsConfig } from "./assertions.js";
+import { ensureNextJsVersion, getNextJsConfigFilename } from "./assertions.js";
 import addRootTagFactory from "./babel-plugins/add-root-tag.js";
-import withBugpilotConfig from "./babel-plugins/with-bugpilot-config.js";
+import withBugpilotConfigFactory from "./babel-plugins/with-bugpilot-config.js";
 import {
   getGlobalErrorPageTemplate,
   InstallBugpilotCommand,
@@ -26,12 +26,12 @@ export async function run(opts: Opts) {
   log.info("Running from directory: " + rootDir);
 
   log.step("Checking prerequisites...");
-  ensureNextJsConfig();
+  const configFilename = getNextJsConfigFilename();
   ensureNextJsVersion();
   const appFolder = getAppFolder(rootDir);
 
-  log.step("Updating next.config.js...");
-  injectConfig(rootDir);
+  log.step(`Updating ${path.relative(process.cwd(), configFilename)}...`);
+  injectConfig(configFilename);
 
   log.step("Adding <Bugpilot /> to root layout...");
   addBugpilotToLayout(appFolder, opts.workspaceId);
@@ -81,17 +81,16 @@ function installDependencies(rootDir: string) {
   execSync(cmd, { stdio: "inherit", cwd: rootDir });
 }
 
-function injectConfig(rootDir: string) {
-  const nextConfigPath = join(rootDir, "next.config.js");
-  const originalCode = readFileSync(nextConfigPath, "utf8");
+function injectConfig(configFilePath: string) {
+  const originalCode = readFileSync(configFilePath, "utf8");
 
   const result = transformSync(originalCode, {
-    plugins: [withBugpilotConfig],
+    plugins: [withBugpilotConfigFactory({ configFilePath })],
   });
 
   if (!result) {
     throw new Error(
-      "Failed to update next.config.js (babel transform error). Please open an issue at https://github.com/bugpilot/wizard/issues/new.",
+      `Failed to update ${configFilePath} (babel transform error). Please open an issue at https://github.com/bugpilot/wizard/issues/new.`,
     );
   }
 
@@ -99,11 +98,11 @@ function injectConfig(rootDir: string) {
 
   if (!injectedCode) {
     throw new Error(
-      "Failed to update next.config.js (empty babel result code). Please open an issue at https://github.com/bugpilot/wizard/issues/new.",
+      `Failed to update ${configFilePath} (empty babel result code). Please open an issue at https://github.com/bugpilot/wizard/issues/new.`,
     );
   }
 
-  writeFileSync(nextConfigPath, injectedCode);
+  writeFileSync(configFilePath, injectedCode);
 }
 
 function addBugpilotToLayout(appFolder: string, workspaceId: string) {

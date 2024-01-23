@@ -128,10 +128,12 @@ export async function install(argv: Arguments<Args>) {
 
     outro(chalk.bold.green("Have an awesome day! Happy coding 🚀"));
 
-    await setTimeout(3 * 1000);
-    await open(
-      `https://app.bugpilot.com/workspace/${workspaceId}/overview?via=cli-done`,
-    );
+    if (process.env.NODE_ENV !== "development") {
+      await setTimeout(3 * 1000);
+      await open(
+        `https://app.bugpilot.com/workspace/${workspaceId}/overview?via=cli-done`,
+      );
+    }
   } catch (e) {
     if (e instanceof WizardError) {
       log.error(chalk.red(e.message));
