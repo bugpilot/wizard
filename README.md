@@ -11,6 +11,7 @@ Bugpilot is a platform to catch production errors in your React applications. Yo
 ```bash
 npx @bugpilot/wizard@latest install
 ```
+![Wizard Demo Video](https://github.com/bugpilot/wizard/assets/950086/1d442901-5a6a-4a3d-b433-44d53a96154e)
 
 ## Manual Installation
 
@@ -21,8 +22,8 @@ If you can't use our CLI Wizard or prefer to go through manual installation step
 Bugpilot Wizard supports the following frameworks:
 
 - [X] Next.js App Router
-- [ ] Next.js Pages Router (WIP)
 - [ ] Remix (WIP)
+- [ ] Next.js Pages Router (currently not supported)
 
 ## License
 
