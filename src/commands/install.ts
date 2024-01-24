@@ -25,6 +25,7 @@ import {
 
 type Args = {
   workspaceId?: string;
+  installDeps: boolean;
 };
 
 export async function install(argv: Arguments<Args>) {
@@ -120,6 +121,7 @@ export async function install(argv: Arguments<Args>) {
 
     await runWizardForFramework(selectedFramework as string, {
       workspaceId,
+      installDeps: argv.installDeps,
     });
 
     log.success(
@@ -155,6 +157,7 @@ function runWizardForFramework(
   framework: string,
   opts: {
     workspaceId: string;
+    installDeps: boolean;
   },
 ) {
   switch (framework) {

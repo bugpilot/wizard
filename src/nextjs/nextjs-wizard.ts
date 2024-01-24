@@ -21,6 +21,7 @@ import {
 
 type Opts = {
   workspaceId: string;
+  installDeps: boolean;
 };
 
 export async function run(opts: Opts) {
@@ -49,8 +50,16 @@ export async function run(opts: Opts) {
   log.step("Creating /app/global-error.tsx...");
   createGlobalErrorTsx(appFolder, opts.workspaceId);
 
-  log.step("Installing @bugpilot/plugin-nextjs...");
-  installDependencies(rootDir);
+  if (opts.installDeps) {
+    log.step(
+      "Installing @bugpilot/plugin-nextjs and @bugpilot/react-error-pages...",
+    );
+    installDependencies(rootDir);
+  } else {
+    log.info(
+      "Skipping dependency installation. Make sure to install @bugpilot/plugin-nextjs and @bugpilot/react-error-pages.",
+    );
+  }
 
   log.success(
     "Next.js App Router wizard completed. It's a good idea to commit your changes now.",
