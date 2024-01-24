@@ -9,11 +9,17 @@ await yargs(hideBin(process.argv))
   .command(
     "install",
     "Start the Bugpilot installation wizard",
-    (yargs) => {
-      return yargs.option("workspace-id", {
+    // @ts-expect-error yargs typings are wrong
+    (_) => {
+      return _.option("workspace-id", {
         type: "string",
         describe: "The ID of your Bugpilot Workspace",
         demandOption: false,
+      }).option("install-deps", {
+        type: "boolean",
+        describe: "Installing required dependencies using pnpm, yarn, or npm",
+        demandOption: false,
+        default: true,
       });
     },
     install,
