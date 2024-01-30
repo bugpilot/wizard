@@ -29,9 +29,11 @@ type Args = {
 };
 
 export async function install(argv: Arguments<Args>) {
+  process.stdout.write("\x1Bc"); // clear screen
+
   try {
     intro(
-      `${chalk.bgCyanBright.bold(
+      `${chalk.bold(
         `Welcome to Bugpilot's installation wizard (v${packageJsonWizard.version})`,
       )}`,
     );
