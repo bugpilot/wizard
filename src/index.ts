@@ -1,4 +1,4 @@
-#!/usr/bin/env node
+#!/usr/bin/env node --no-warnings=ExperimentalWarning
 
 import yargs from "yargs";
 import { hideBin } from "yargs/helpers";
@@ -7,7 +7,7 @@ import { install } from "./commands/install.js";
 
 await yargs(hideBin(process.argv))
   .command(
-    "install",
+    ["install", "$0"], // $0 is the default command
     "Start the Bugpilot installation wizard",
     // @ts-expect-error yargs typings are wrong
     (_) => {
@@ -33,5 +33,4 @@ await yargs(hideBin(process.argv))
       yargs.showHelp();
     },
   )
-  .demandCommand()
   .parse();
