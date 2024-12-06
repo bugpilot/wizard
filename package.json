@@ -35,7 +35,7 @@
     "@babel/plugin-syntax-jsx": "^7.23.3",
     "@babel/plugin-syntax-typescript": "^7.23.3",
     "@babel/types": "^7.23.6",
-    "@clack/prompts": "^0.7.0",
+    "@clack/prompts": "^0.8.1",
     "chalk": "^4.1.2",
     "open": "^10.0.3",
     "semver": "^7.5.4",
