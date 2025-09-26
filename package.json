@@ -34,7 +34,7 @@
     "@babel/core": "^7.23.7",
     "@babel/plugin-syntax-jsx": "^7.23.3",
     "@babel/plugin-syntax-typescript": "^7.23.3",
-    "@babel/types": "^7.23.6",
+    "@babel/types": "^7.28.2",
     "@clack/prompts": "^0.7.0",
     "chalk": "^4.1.2",
     "open": "^10.0.3",
